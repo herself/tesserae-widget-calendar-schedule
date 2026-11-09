@@ -589,7 +589,7 @@ export function renderDay(day, timeFormat, showColour, useSymbol, labelStyle, t,
     ? `<div class="all-day-stack">${allDay.map((e) => renderAllDay(e, showColour, day.date_iso, t, locale, feedPrefix)).join("")}</div>`
     : "";
   const timedHtml = timed.length
-    ? `<div class="rail">${timed.map((e) => renderTimed(e, timeFormat, showColour, useSymbol, t, locale, feedPrefix)).join("")}</div>`
+    ? `<div class="rail">${timed.map((e) => renderTimed(e, timeFormat, useSymbol, t, locale, feedPrefix)).join("")}</div>`
     : "";
   const empty = !allDay.length && !timed.length
     ? `<div class="day-empty">${escapeHtml(t("no_events_day", "(no events)"))}</div>`
@@ -631,7 +631,7 @@ function renderAllDay(ev, showColour, dateIso, t, locale, feedPrefix = false) {
   `;
 }
 
-function renderTimed(ev, timeFormat, showColour, useSymbol, t, locale, feedPrefix = false) {
+function renderTimed(ev, timeFormat, useSymbol, t, locale, feedPrefix = false) {
   const title = escapeHtml(eventTitle(ev, t, feedPrefix));
   const startChip = formatChipLabel(ev.start_local, timeFormat, locale);
   // v0.10.0: the server flags events that have already ended when
@@ -642,10 +642,12 @@ function renderTimed(ev, timeFormat, showColour, useSymbol, t, locale, feedPrefi
   // so colour-derived symbols collapse to the fallback bullet.
   // A feed's own symbol is unaffected by that.
   const node = escapeHtml(nodeFor(ev, useSymbol));
+  const hasSymbol = (typeof ev.symbol === "string" && ev.symbol.trim() !== "")
+    || (useSymbol && typeof ev.colour === "string" && HEX6.test(ev.colour));
   // Keep the location separate so one-line styles can clip it.
   const sub = ev.location ? `<span class="rail-loc">${escapeHtml(ev.location)}</span>` : "";
   return `
-    <div class="rail-row${past ? " is-past" : ""}">
+    <div class="rail-row${past ? " is-past" : ""}${hasSymbol ? " has-symbol" : ""}">
       <div class="time-gutter">
         <span class="time-chip">${escapeHtml(startChip || "")}</span>
       </div>
@@ -1007,6 +1009,10 @@ function styles(fontFamily) {
         background: var(--surface, #FCFBF7);
         font-family: "DejaVu Sans", "Noto Sans Symbols 2", "Segoe UI Symbol", sans-serif;
         font-size: 0.9em;
+      }
+      .rail-row.has-symbol .rail-node {
+        font-size: 1.2em;
+        top: 0;
       }
       .rail-content {
         flex: 1 1 0;
