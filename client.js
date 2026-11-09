@@ -1012,7 +1012,7 @@ function styles(fontFamily) {
         font-size: 0.9em;
       }
       .rail-row.has-symbol .rail-node {
-        font-size: 1.2em;
+        font-size: 0.99em;
         top: 0;
       }
       .rail-content {
