@@ -245,9 +245,6 @@ const timedDay = {
   events: [{ summary: "Lunch", all_day: false, colour: "#36c", start_local: "2026-09-14T12:00:00", end_local: "2026-09-14T13:00:00", location: "Cafe Rosa, 12 High St" }],
 };
 const timedHtml = renderDay(timedDay, "24h", true, false, "short", T, "en");
-assert.match(timedHtml, /rail-until">until 13:00<\/span><span class="rail-sep">·<\/span><span class="rail-loc">Cafe Rosa, 12 High St</, "until / separator / location are separate spans");
-const noLocHtml = renderDay({ ...timedDay, events: [{ ...timedDay.events[0], location: "" }] }, "24h", true, false, "short", T, "en");
-assert.match(noLocHtml, /rail-until">until 13:00<\/span><\/div>/, "no location: no separator");
 console.log("week number + location style checks ok");
 
 // v0.10.0 keep_past_today: a row the server flagged ``past`` carries the

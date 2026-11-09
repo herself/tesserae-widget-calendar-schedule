@@ -634,7 +634,6 @@ function renderAllDay(ev, showColour, dateIso, t, locale, feedPrefix = false) {
 function renderTimed(ev, timeFormat, showColour, useSymbol, t, locale, feedPrefix = false) {
   const title = escapeHtml(eventTitle(ev, t, feedPrefix));
   const startChip = formatChipLabel(ev.start_local, timeFormat, locale);
-  const endLabel = formatChipLabel(ev.end_local, timeFormat, locale);
   // v0.10.0: the server flags events that have already ended when
   // keep_past_today is on. Those rows drop the feed colour and paint
   // in muted ink so the eye lands on what is still to come.
@@ -643,11 +642,8 @@ function renderTimed(ev, timeFormat, showColour, useSymbol, t, locale, feedPrefi
   // so colour-derived symbols collapse to the fallback bullet.
   // A feed's own symbol is unaffected by that.
   const node = escapeHtml(nodeFor(ev, useSymbol));
-  // The location gets its own span so the one-line location styles can
-  // clip it with an ellipsis while the "until" part stays whole.
-  const untilPart = endLabel ? `<span class="rail-until">${escapeHtml(t("until", "until"))} ${escapeHtml(endLabel)}</span>` : "";
-  const locPart = ev.location ? `<span class="rail-loc">${escapeHtml(ev.location)}</span>` : "";
-  const sub = [untilPart, locPart].filter(Boolean).join(`<span class="rail-sep">·</span>`);
+  // Keep the location separate so one-line styles can clip it.
+  const sub = ev.location ? `<span class="rail-loc">${escapeHtml(ev.location)}</span>` : "";
   return `
     <div class="rail-row${past ? " is-past" : ""}">
       <div class="time-gutter">
@@ -1034,7 +1030,6 @@ function styles(fontFamily) {
         color: var(--text-muted, var(--muted, #8A8678));
         margin-top: 0.06em;
       }
-      .rail-sep { margin: 0 0.3em; }
       /* keep_past_today: an event that has already ended keeps its row
          but in muted ink, with a lighter title weight, so it reads as
          done without vanishing. Time chips stay black for contrast. */
@@ -1045,20 +1040,13 @@ function styles(fontFamily) {
       .rail-row.is-past .rail-node {
         color: var(--text-muted, var(--muted, #8A8678));
       }
-      /* location_style "line" / "short": keep the sub line to one row and
-         trim the location with an ellipsis. The "until" part is fixed
-         width; the location takes what's left. "full" and "short_wrap" wrap. */
+      /* location_style "line" / "short" clips the location with an
+         ellipsis. "full" and "short_wrap" wrap. */
       .frame[data-loc="line"] .rail-sub,
       .frame[data-loc="short"] .rail-sub {
         display: flex;
         align-items: baseline;
         white-space: nowrap;
-      }
-      .frame[data-loc="line"] .rail-until,
-      .frame[data-loc="short"] .rail-until,
-      .frame[data-loc="line"] .rail-sep,
-      .frame[data-loc="short"] .rail-sep {
-        flex: 0 0 auto;
       }
       .frame[data-loc="line"] .rail-loc,
       .frame[data-loc="short"] .rail-loc {

@@ -1,7 +1,6 @@
 {
   "title": "Zeitplan",
   "all_day": "GANZTAGS",
-  "until": "bis",
   "no_events_day": "(keine Termine)",
   "no_upcoming": "Keine weiteren Termine.",
   "untitled": "(ohne Titel)",

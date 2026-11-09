@@ -81,21 +81,19 @@ The multi-column flow reads column-first: day 1 top-left, day 2 below it, wrap t
 
 ## Layout
 
-Each day is a header (big day number + weekday, muted month right-aligned, optional week number) with a thick ink underline, followed by any all-day events as coloured bars, then a timeline rail of timed events. A multi-day all-day event shows on every day it covers; the days it carries on past are badged with the date it ends (`→ AUG 20`). Each timed event has a black start-time chip on the left, a rail-node dot on a 2px vertical spine, and a wrapping title with `until <end time> · <location>` beneath. Days stay atomic across columns (never split).
+Each day is a header (big day number + weekday, muted month right-aligned, optional week number) with a thick ink underline, followed by any all-day events as coloured bars, then a timeline rail of timed events. A multi-day all-day event shows on every day it covers; the days it carries on past are badged with the date it ends (`→ AUG 20`). Each timed event has a black start-time chip on the left, a rail-node dot on a 2px vertical spine, and a wrapping title with only the location beneath, when present. End times are not displayed. Days stay atomic across columns (never split).
 
 ```
 6  MON                                                   JUL
 [09:00] •  Standup
-           until 09:30
 [11:00] •  Design review with Alex
-           until 12:00 · Studio A
+           Studio A
 [12:30] •  Lunch w/ Sam
-           until 13:30 · Corner cafe
+           Corner cafe
 
 7  TUE                                                   JUL
 [ ALL DAY  Public Holiday                                    ]
 [08:00] •  Coffee walk
-           until 08:30
 ```
 
 The first day in the window is highlighted as "today" (accent-coloured day number).
@@ -105,7 +103,7 @@ The first day in the window is highlighted as "today" (accent-coloured day numbe
 Panel text follows the panel's language (Settings → Devices, or the app-wide
 default under Settings → Server). Weekday and month labels come from the
 browser's own locale data via `Intl`, so they need no translation. The
-handful of fixed phrases ("Schedule", "ALL DAY", "until", "(no events)" and
+handful of fixed phrases ("Schedule", "ALL DAY", "(no events)" and
 so on) live in `strings/<tag>.json`; English, French, German and Swedish ship today.
 
 To add a language, copy `strings/en.json` to `strings/<tag>.json`, translate
