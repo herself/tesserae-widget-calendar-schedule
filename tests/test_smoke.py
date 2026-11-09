@@ -859,6 +859,33 @@ def _run_location(options: dict[str, Any], location: str) -> dict[str, Any]:
         return server.fetch(options={"days_ahead": "1", **options}, settings={}, ctx={})
 
 
+def test_online_locations_are_hidden_before_shortening() -> None:
+    for style in ("full", "line", "short_wrap", "short"):
+        for location in (
+            "https://meet.example/room",
+            "Studio A, HTTP://meet.example/room",
+            "Studio A\njoin HtTpS://meet.example/room",
+        ):
+            out = _run_location(
+                {"days_ahead": "2", "location_style": style}, location
+            )
+            row = out["days"][0]["events"][0]
+            assert row["summary"] == "Lunch"
+            assert "location" not in row
+
+
+def test_hidden_online_locations_do_not_match_keywords() -> None:
+    location = "Studio A, https://meet.example/room"
+    kept = _run_location(
+        {"days_ahead": "2", "hide_keywords": "studio"}, location
+    )
+    assert _titles(kept) == ["Lunch"]
+    excluded = _run_location(
+        {"days_ahead": "2", "only_keywords": "studio"}, location
+    )
+    assert _titles(excluded) == []
+
+
 def test_location_style_defaults_to_full_and_keeps_the_whole_string() -> None:
     out = _run_location({}, "Cafe Rosa, 12 High St")
     assert out["location_style"] == "full"

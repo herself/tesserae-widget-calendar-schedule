@@ -195,7 +195,7 @@
       "type": "boolean",
       "label": "Locations",
       "default": true,
-      "help": "The lighter location text under each event title.",
+      "help": "The lighter location text under each event title. Locations containing http (case-insensitive) are hidden entirely, before shortening and keyword filtering.",
       "advanced": true
     },
     {

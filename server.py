@@ -279,9 +279,12 @@ def fetch(
         # act on text the panel doesn't display.
         if show_location and ev.get("location"):
             location = str(ev.get("location"))
-            if location_style in ("short", "short_wrap"):
-                location = _shorten_location(location)
-            row["location"] = location
+            # Check the whole value before shortening: a URL in an address
+            # suffix still makes this an online location.
+            if "http" not in location.lower():
+                if location_style in ("short", "short_wrap"):
+                    location = _shorten_location(location)
+                row["location"] = location
 
         # Keyword filters. Matched against the event as the operator sees it,
         # so a location only counts when locations are being shown; filtering
