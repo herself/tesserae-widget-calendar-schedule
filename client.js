@@ -639,14 +639,10 @@ function renderTimed(ev, timeFormat, showColour, useSymbol, t, locale, feedPrefi
   // keep_past_today is on. Those rows drop the feed colour and paint
   // in muted ink so the eye lands on what is still to come.
   const past = ev.past === true;
-  const bg = past
-    ? "var(--text-muted, var(--muted, #8A8678))"
-    : showColour && ev.colour ? ev.colour : "var(--text-primary, #1B1A16)";
   // ev.colour is already None-ed out server-side when show_dot_color is off,
-  // so the colour-derived symbols collapse to the fallback bullet along with
-  // the chip fill. A feed's own symbol is unaffected by that.
+  // so colour-derived symbols collapse to the fallback bullet.
+  // A feed's own symbol is unaffected by that.
   const node = escapeHtml(nodeFor(ev, useSymbol));
-  const chipStyle = `style="background:${escapeAttr(bg)}"`;
   // The location gets its own span so the one-line location styles can
   // clip it with an ellipsis while the "until" part stays whole.
   const untilPart = endLabel ? `<span class="rail-until">${escapeHtml(t("until", "until"))} ${escapeHtml(endLabel)}</span>` : "";
@@ -655,7 +651,7 @@ function renderTimed(ev, timeFormat, showColour, useSymbol, t, locale, feedPrefi
   return `
     <div class="rail-row${past ? " is-past" : ""}">
       <div class="time-gutter">
-        <span class="time-chip" ${chipStyle}>${escapeHtml(startChip || "")}</span>
+        <span class="time-chip">${escapeHtml(startChip || "")}</span>
       </div>
       <div class="rail-spine"><span class="rail-node">${node}</span></div>
       <div class="rail-content">
@@ -977,7 +973,8 @@ function styles(fontFamily) {
         padding-top: 0.12em;
       }
       .time-chip {
-        color: var(--surface, #FCFBF7);
+        background: #000;
+        color: #fff;
         font-weight: 800;
         font-size: calc(0.72em * var(--time-scale, 1));
         padding: 0.18em 0.36em;
@@ -1040,8 +1037,7 @@ function styles(fontFamily) {
       .rail-sep { margin: 0 0.3em; }
       /* keep_past_today: an event that has already ended keeps its row
          but in muted ink, with a lighter title weight, so it reads as
-         done without vanishing. The chip fill is switched to the muted
-         colour in renderTimed. */
+         done without vanishing. Time chips stay black for contrast. */
       .rail-row.is-past .rail-title {
         color: var(--text-muted, var(--muted, #8A8678));
         font-weight: 600;

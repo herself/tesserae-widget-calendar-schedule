@@ -1,6 +1,6 @@
 # Calendar, Schedule
 
-A [Tesserae](https://github.com/dmellok/tesserae) widget that paints a timeline-rail agenda view: upcoming events grouped by day, with a thin ink rail connecting per-event nodes and a coloured start-time chip carrying the feed accent. Titles wrap freely so the widget stays legible from 1 up to 4 narrow columns on wide e-ink panels.
+A [Tesserae](https://github.com/dmellok/tesserae) widget that paints a timeline-rail agenda view: upcoming events grouped by day, with a thin ink rail connecting per-event nodes and a black start-time chip with white text. Titles wrap freely so the widget stays legible from 1 up to 4 narrow columns on wide e-ink panels.
 
 Reads from the same `calendar_core` feeds the other calendar_* widgets use. Drop in alongside `calendar_day` / `calendar_week` / `calendar_month`; pick which feeds to include per cell.
 
@@ -53,7 +53,7 @@ Under **More options**:
 - **Day header size** and **Day label size**: the first multiplies the whole day header (date number, weekday, month, week number) together, so the parts keep their proportions. The second scales only the weekday / month / week labels and leaves the date number alone, which is how you fix labels that read too small beside the number. At `2.0` the weekday sits at roughly the proportion the continued-day breadcrumb uses. Both default to `1.0`.
 - **Event title size**, **Event time size** and **Day spacing**: multipliers on the event text and the padding around each day block.
 
-Feed colour is carried by the start-time chip and the all-day bar. Turning off **Feed colour** replaces the chip fill with ink for 1-bit panels.
+Start-time chips always use a black background and white text, including past events. **Feed colour** still controls the feed-colour symbols and all-day bars.
 
 **Use symbol dots** sorts each feed colour into one of 19 buckets (3 greyscale levels, then 8 hue slices each split by saturation) and draws that bucket's shape. Hollow shapes are the washed-out half of each hue, solid the vivid half.
 
@@ -81,7 +81,7 @@ The multi-column flow reads column-first: day 1 top-left, day 2 below it, wrap t
 
 ## Layout
 
-Each day is a header (big day number + weekday, muted month right-aligned, optional week number) with a thick ink underline, followed by any all-day events as coloured bars, then a timeline rail of timed events. A multi-day all-day event shows on every day it covers; the days it carries on past are badged with the date it ends (`→ AUG 20`). Each timed event has a coloured start-time chip on the left, a rail-node dot on a 2px vertical spine, and a wrapping title with `until <end time> · <location>` beneath. Days stay atomic across columns (never split).
+Each day is a header (big day number + weekday, muted month right-aligned, optional week number) with a thick ink underline, followed by any all-day events as coloured bars, then a timeline rail of timed events. A multi-day all-day event shows on every day it covers; the days it carries on past are badged with the date it ends (`→ AUG 20`). Each timed event has a black start-time chip on the left, a rail-node dot on a 2px vertical spine, and a wrapping title with `until <end time> · <location>` beneath. Days stay atomic across columns (never split).
 
 ```
 6  MON                                                   JUL

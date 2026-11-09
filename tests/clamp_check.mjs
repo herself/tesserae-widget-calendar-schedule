@@ -251,13 +251,10 @@ assert.match(noLocHtml, /rail-until">until 13:00<\/span><\/div>/, "no location: 
 console.log("week number + location style checks ok");
 
 // v0.10.0 keep_past_today: a row the server flagged ``past`` carries the
-// is-past class and swaps the feed colour on the chip for muted ink;
-// an unflagged row is untouched.
+// is-past class; an unflagged row is untouched.
 const pastHtml = renderDay({ ...timedDay, events: [{ ...timedDay.events[0], past: true }] }, "24h", true, false, "short", T, "en");
 assert.match(pastHtml, /class="rail-row is-past"/, "ended event row is marked past");
-assert.match(pastHtml, /time-chip" style="background:var\(--text-muted/, "past chip drops the feed colour");
 assert.doesNotMatch(timedHtml, /is-past/, "an unflagged row is not marked");
-assert.match(timedHtml, /time-chip" style="background:#36c"/, "an unflagged row keeps its feed colour");
 console.log("keep_past_today checks ok");
 
 // v0.11.0: a feed's own symbol (Calendar Feeds) is the rail node whether or
