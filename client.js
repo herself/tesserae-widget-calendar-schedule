@@ -972,7 +972,7 @@ function styles(fontFamily) {
         padding-top: 0.12em;
       }
       .time-chip {
-        background: #000;
+        background: #404040;
         color: #fff;
         font-weight: 800;
         font-size: calc(0.72em * var(--time-scale, 1));
@@ -1042,7 +1042,7 @@ function styles(fontFamily) {
       }
       /* keep_past_today: an event that has already ended keeps its row
          but in muted ink, with a lighter title weight, so it reads as
-         done without vanishing. Time chips stay black for contrast. */
+         done without vanishing. Time chips keep their dark-grey fill. */
       .rail-row.is-past .rail-title {
         color: var(--text-muted, var(--muted, #8A8678));
         font-weight: 600;
