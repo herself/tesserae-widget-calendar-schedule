@@ -361,6 +361,18 @@
       "advanced": true
     },
     {
+      "name": "event_no_location_spacing_em",
+      "type": "slider",
+      "label": "Spacing without location",
+      "default": 0.3,
+      "min": 0.0,
+      "max": 3.0,
+      "step": 0.05,
+      "unit": "em",
+      "help": "Extra space below timed events with no displayed location, including locations hidden on small cells. Scales with the auto-fit font size. Set to 0 for compact rows.",
+      "advanced": true
+    },
+    {
       "name": "day_row_padding_em",
       "type": "slider",
       "label": "Day spacing",

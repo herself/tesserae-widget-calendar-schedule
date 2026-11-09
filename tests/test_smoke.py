@@ -991,7 +991,7 @@ def test_options_panel_is_short_and_keeps_saved_cells() -> None:
     old = json.loads(
         (root / "tests" / "options_v0_13_3.json").read_text(encoding="utf-8")
     )
-    assert set(old) == set(by)
+    assert set(old) <= set(by)
     for name, was in old.items():
         o = by[name]
         assert o["type"] == was["type"] and o.get("default") == was["default"], name

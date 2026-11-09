@@ -513,6 +513,7 @@ function layout(data, options, fontFamily, ctx) {
   const timeScale = clampScale(options.event_time_scale, 1.0, 0.01, 10.0);
   const locScale = clampScale(options.event_location_scale, 0.9, 0.01, 10.0);
   const rowPad = clampScale(options.day_row_padding_em, 0.5, 0.0, 3.0);
+  const noLocationSpacing = clampScale(options.event_no_location_spacing_em, 0.3, 0.0, 3.0);
   const dashboardTitleScale = clampScale(options.title_scale, 1.0, 0.01, 10.0);
   const headerScale = clampScale(options.header_scale, 1.0, 0.01, 10.0);
   // v0.12.0: header_scale multiplies the whole day header uniformly, so it
@@ -528,7 +529,7 @@ function layout(data, options, fontFamily, ctx) {
   const locStyle = ["full", "line", "short_wrap", "short"].includes(data.location_style) ? data.location_style : "full";
   const contLabel = cssString(t("continued", "cont."));
   let prevWeek = null;
-  const styleAttr = `--event-title-scale:${eventTitleScale};--time-scale:${timeScale};--loc-scale:${locScale};--row-pad:${rowPad}em;--dashboard-title-scale:${dashboardTitleScale};--header-scale:${headerScale};--header-label-scale:${headerLabelScale};--cont-label:&quot;${escapeHtml(contLabel)}&quot;;`;
+  const styleAttr = `--event-title-scale:${eventTitleScale};--time-scale:${timeScale};--loc-scale:${locScale};--row-pad:${rowPad}em;--no-location-spacing:${noLocationSpacing}em;--dashboard-title-scale:${dashboardTitleScale};--header-scale:${headerScale};--header-label-scale:${headerLabelScale};--cont-label:&quot;${escapeHtml(contLabel)}&quot;;`;
   return `
     ${styles(fontFamily)}
     <div class="frame" data-cols="${columns}" data-loc="${locStyle}" style="${styleAttr}">
@@ -652,7 +653,7 @@ function renderTimed(ev, timeFormat, useSymbol, t, locale, feedPrefix = false) {
         <span class="time-chip">${escapeHtml(startChip || "")}</span>
       </div>
       <div class="rail-spine"><span class="rail-node">${node}</span></div>
-      <div class="rail-content">
+      <div class="rail-content${sub ? "" : " no-location"}">
         <div class="rail-title">${title}</div>
         ${sub ? `<div class="rail-sub">${sub}</div>` : ""}
       </div>
@@ -1024,6 +1025,9 @@ function styles(fontFamily) {
            tighter row lets more events squeeze in per column. */
         padding: 0.12em 0 0.42em 0.85em;
       }
+      .rail-content.no-location {
+        padding-bottom: calc(0.42em + var(--no-location-spacing, 0.3em));
+      }
       .rail-title {
         font-weight: 800;
         line-height: 1.14;
@@ -1086,6 +1090,9 @@ function styles(fontFamily) {
       @container (max-width: 360px) {
         .title-pill { display: none; }
         .rail-sub { display: none; }
+        .rail-content {
+          padding-bottom: calc(0.42em + var(--no-location-spacing, 0.3em));
+        }
         .day-month { display: none; }
         .day-week { display: none; }
         .all-day-label { display: none; }

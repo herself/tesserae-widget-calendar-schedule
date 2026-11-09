@@ -52,6 +52,7 @@ Under **More options**:
 - **Week number**: adds the ISO 8601 week number (`W38`) to the day header beside the month. **First day of each week** marks the first day shown from each week, so it appears once per week even when Monday is skipped for having no events; **Every day** repeats it on every header. Off by default. The label follows the panel language (`KW 38`, `S38`, `V38`).
 - **Day header size** and **Day label size**: the first multiplies the whole day header (date number, weekday, month, week number) together, so the parts keep their proportions. The second scales only the weekday / month / week labels and leaves the date number alone, which is how you fix labels that read too small beside the number. At `2.0` the weekday sits at roughly the proportion the continued-day breadcrumb uses. Both default to `1.0`.
 - **Event title size**, **Event time size** and **Day spacing**: multipliers on the event text and the padding around each day block.
+- **Spacing without location**: extra space below timed events when no location is displayed, including online locations, locations switched off, and locations hidden by the small-cell layout. Defaults to `0.3em`; adjustable from `0` (no extra space) to `3em`. Scales with the auto-fit font size without changing spacing on rows that show a location.
 
 Start-time chips always use a black background and white text, including past events. **Feed colour** still controls the feed-colour symbols and all-day bars.
 
