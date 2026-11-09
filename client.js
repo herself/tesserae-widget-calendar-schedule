@@ -529,6 +529,8 @@ function layout(data, options, fontFamily, ctx) {
   const locStyle = ["full", "line", "short_wrap", "short"].includes(data.location_style) ? data.location_style : "full";
   const contLabel = cssString(t("continued", "cont."));
   let prevWeek = null;
+  // Shared across days so headers and all-day bars do not reset striping.
+  const timeChips = { index: 0 };
   const styleAttr = `--event-title-scale:${eventTitleScale};--time-scale:${timeScale};--loc-scale:${locScale};--row-pad:${rowPad}em;--no-location-spacing:${noLocationSpacing}em;--dashboard-title-scale:${dashboardTitleScale};--header-scale:${headerScale};--header-label-scale:${headerLabelScale};--cont-label:&quot;${escapeHtml(contLabel)}&quot;;`;
   return `
     ${styles(fontFamily)}
@@ -540,7 +542,7 @@ function layout(data, options, fontFamily, ctx) {
             const week = weekLabel(d, weekMode, prevWeek, t);
             const date = parseDateIso(d && d.date_iso);
             if (date) prevWeek = isoWeek(date);
-            return renderDay(d, tf, showColour, useSymbol, labelStyle, t, locale, week, feedPrefix);
+            return renderDay(d, tf, showColour, useSymbol, labelStyle, t, locale, week, feedPrefix, timeChips);
           }).join("")}
         </div>
       </div>
@@ -582,7 +584,7 @@ export function allDayEndBadge(ev, dateIso, locale) {
   return `${month} ${date.getDate()}`;
 }
 
-export function renderDay(day, timeFormat, showColour, useSymbol, labelStyle, t, locale, week = "", feedPrefix = false) {
+export function renderDay(day, timeFormat, showColour, useSymbol, labelStyle, t, locale, week = "", feedPrefix = false, timeChips = { index: 0 }) {
   const events = Array.isArray(day.events) ? day.events : [];
   const allDay = events.filter((e) => e && e.all_day === true);
   const timed = events.filter((e) => e && e.all_day !== true);
@@ -590,7 +592,7 @@ export function renderDay(day, timeFormat, showColour, useSymbol, labelStyle, t,
     ? `<div class="all-day-stack">${allDay.map((e) => renderAllDay(e, showColour, day.date_iso, t, locale, feedPrefix)).join("")}</div>`
     : "";
   const timedHtml = timed.length
-    ? `<div class="rail">${timed.map((e) => renderTimed(e, timeFormat, useSymbol, t, locale, feedPrefix)).join("")}</div>`
+    ? `<div class="rail">${timed.map((e) => renderTimed(e, timeFormat, useSymbol, t, locale, feedPrefix, timeChips.index++ % 2 === 1)).join("")}</div>`
     : "";
   const empty = !allDay.length && !timed.length
     ? `<div class="day-empty">${escapeHtml(t("no_events_day", "(no events)"))}</div>`
@@ -632,7 +634,7 @@ function renderAllDay(ev, showColour, dateIso, t, locale, feedPrefix = false) {
   `;
 }
 
-function renderTimed(ev, timeFormat, useSymbol, t, locale, feedPrefix = false) {
+function renderTimed(ev, timeFormat, useSymbol, t, locale, feedPrefix = false, lightChip = false) {
   const title = escapeHtml(eventTitle(ev, t, feedPrefix));
   const startChip = formatChipLabel(ev.start_local, timeFormat, locale);
   // v0.10.0: the server flags events that have already ended when
@@ -650,7 +652,7 @@ function renderTimed(ev, timeFormat, useSymbol, t, locale, feedPrefix = false) {
   return `
     <div class="rail-row${past ? " is-past" : ""}${hasSymbol ? " has-symbol" : ""}">
       <div class="time-gutter">
-        <span class="time-chip">${escapeHtml(startChip || "")}</span>
+        <span class="time-chip${lightChip ? " time-chip--light" : ""}">${escapeHtml(startChip || "")}</span>
       </div>
       <div class="rail-spine"><span class="rail-node">${node}</span></div>
       <div class="rail-content${sub ? "" : " no-location"}">
@@ -981,6 +983,9 @@ function styles(fontFamily) {
         white-space: nowrap;
         height: fit-content;
       }
+      .time-chip--light {
+        background: #808080;
+      }
       /* The rail is a 2px vertical line running the full row height so
          adjacent rows' rails abut into a continuous spine. The node dot
          is absolutely positioned on the rail so it lines up with the
@@ -1042,7 +1047,7 @@ function styles(fontFamily) {
       }
       /* keep_past_today: an event that has already ended keeps its row
          but in muted ink, with a lighter title weight, so it reads as
-         done without vanishing. Time chips keep their dark-grey fill. */
+         done without vanishing. Time chips keep their alternating greys. */
       .rail-row.is-past .rail-title {
         color: var(--text-muted, var(--muted, #8A8678));
         font-weight: 600;
